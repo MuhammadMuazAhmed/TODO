@@ -40,12 +40,10 @@ function App() {
     }
   }, []);
 
-  // Check if user is already logged in on app load
+  // Clear any existing user session on app load to require fresh login
   useEffect(() => {
-    const savedUser = localStorage.getItem("currentUser");
-    if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
-    }
+    // Remove any existing user session from localStorage
+    localStorage.removeItem("currentUser");
   }, []);
 
   // Load todos and goals when user changes
