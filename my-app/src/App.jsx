@@ -1,142 +1,465 @@
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { CiEdit } from "react-icons/ci";
-import { MdDeleteOutline } from "react-icons/md";
-import Navbar from "./components/Nav";
+import Sidebar from "./components/Sidebar";
+import TodoSection from "./components/TodoSection";
+import GoalSection from "./components/GoalSection";
+import Login from "./components/Login";
+import AIAssistant from "./components/AIAssistant";
+import AINotification from "./components/AINotification";
+import ProgressQuestions from "./components/ProgressQuestions";
+import Mascot, {
+  HappyMascot,
+  ExcitedMascot,
+  ProudMascot,
+  EncouragingMascot,
+  ThinkingMascot,
+  SurprisedMascot,
+  SleepyMascot,
+  CelebratingMascot,
+  FocusedMascot,
+  WorriedMascot,
+} from "./components/Mascot";
 
 function App() {
-  const [todo, setTodo] = useState("");
+  const [activeView, setActiveView] = useState(null);
+  const [activeGoal, setActiveGoal] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [todos, setTodos] = useState([]);
-  const [finisheditems, setfinisheditems] = useState(false);
+  const [goals, setGoals] = useState([]);
+  const [notification, setNotification] = useState(null);
+  const [showProgressQuestions, setShowProgressQuestions] = useState(false);
+  const [hasShownQuestionsToday, setHasShownQuestionsToday] = useState(false);
+  const [mascotEmotion, setMascotEmotion] = useState("happy");
+  const [showMascot, setShowMascot] = useState(false);
 
-  const Togglefinished = (e) => {
-    setfinisheditems(!finisheditems);
-  };
-
+  // Security: Clear any sensitive data from URL parameters on load
   useEffect(() => {
-    const todostrin = localStorage.getItem("todos");
-    if (todostrin) {
-      const savedTodos = JSON.parse(todostrin);
-      setTodos(savedTodos);
+    // Remove any sensitive data from URL parameters
+    if (window.location.search) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
     }
   }, []);
 
-  const saveToLS = (newTodos) => {
-    localStorage.setItem("todos", JSON.stringify(newTodos));
+  // Check if user is already logged in on app load
+  useEffect(() => {
+    const savedUser = localStorage.getItem("currentUser");
+    if (savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  // Load todos and goals when user changes
+  useEffect(() => {
+    if (currentUser) {
+      const savedTodos = localStorage.getItem(`todos_${currentUser.id}`);
+      const savedGoals = localStorage.getItem(`goals_${currentUser.id}`);
+
+      if (savedTodos) {
+        setTodos(JSON.parse(savedTodos));
+      } else {
+        setTodos([]);
+      }
+
+      if (savedGoals) {
+        setGoals(JSON.parse(savedGoals));
+      } else {
+        setGoals([]);
+      }
+    }
+  }, [currentUser]);
+
+  // Check for progress questions when goals change
+  useEffect(() => {
+    if (currentUser && goals.length > 0) {
+      checkAndShowProgressQuestions();
+    }
+  }, [currentUser, goals]);
+
+  // Check if we should show progress questions (once per day)
+  const checkAndShowProgressQuestions = () => {
+    if (!currentUser) return;
+
+    // Only show progress questions if user has goals
+    if (!goals || goals.length === 0) return;
+
+    const today = new Date().toDateString();
+    const lastQuestionDate = localStorage.getItem(
+      `lastQuestionDate_${currentUser.id}`
+    );
+
+    if (lastQuestionDate !== today) {
+      setShowProgressQuestions(true);
+      localStorage.setItem(`lastQuestionDate_${currentUser.id}`, today);
+    }
   };
 
-  const add = () => {
-    const newTodos = [...todos, { id: uuidv4(), todo, isCompleted: false }];
-    setTodos(newTodos);
-    setTodo("");
-    saveToLS(newTodos);
+  // Manual trigger for progress questions (for testing)
+  const triggerProgressQuestions = () => {
+    if (currentUser && goals.length > 0) {
+      setShowProgressQuestions(true);
+    }
   };
 
-  const handleEdit = (e, id) => {
-    const t = todos.filter((i) => i.id === id);
-    setTodo(t[0].todo);
-    const newTodos = todos.filter((item) => item.id !== id);
-    setTodos(newTodos);
-    saveToLS(newTodos);
+  // Handle adding daily tasks from goals
+  const handleAddTasks = (dailyTasks) => {
+    if (currentUser && activeView) {
+      const newTodos = dailyTasks.map((task, index) => ({
+        id: `daily_${Date.now()}_${index}`,
+        todo: task.title,
+        isCompleted: false,
+        view: activeView,
+        createdAt: new Date().toISOString(),
+        description: task.description,
+        estimatedTime: task.estimatedTime,
+        priority: task.priority,
+        source: "daily-task",
+      }));
+
+      const updatedTodos = [...todos, ...newTodos];
+      setTodos(updatedTodos);
+      localStorage.setItem(
+        `todos_${currentUser.id}`,
+        JSON.stringify(updatedTodos)
+      );
+
+      setNotification({
+        message: `🎯 Added ${dailyTasks.length} daily tasks to help you achieve your goals!`,
+        type: "analysis",
+      });
+    } else {
+      // If no active view, add to daily view
+      const newTodos = dailyTasks.map((task, index) => ({
+        id: `daily_${Date.now()}_${index}`,
+        todo: task.title,
+        isCompleted: false,
+        view: "daily",
+        createdAt: new Date().toISOString(),
+        description: task.description,
+        estimatedTime: task.estimatedTime,
+        priority: task.priority,
+        source: "daily-task",
+      }));
+
+      const updatedTodos = [...todos, ...newTodos];
+      setTodos(updatedTodos);
+      localStorage.setItem(
+        `todos_${currentUser.id}`,
+        JSON.stringify(updatedTodos)
+      );
+
+      setNotification({
+        message: `🎯 Added ${dailyTasks.length} daily tasks to your daily view!`,
+        type: "analysis",
+      });
+    }
   };
 
-  const handleDelete = (e, id) => {
-    const newTodos = todos.filter((item) => item.id !== id);
-    setTodos(newTodos);
-    saveToLS(newTodos);
+  // Test AI connection on app load (silent) - Only in development
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      const testAI = async () => {
+        try {
+          const GeminiAIService = (await import("./services/geminiAI")).default;
+          await GeminiAIService.testAI();
+        } catch (error) {
+          // Silent fail in production
+        }
+      };
+
+      testAI();
+    }
+  }, []);
+
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    setMascotEmotion("excited");
+    setShowMascot(true);
+    setTimeout(() => setShowMascot(false), 3000);
   };
 
-  const change = (e) => {
-    setTodo(e.target.value);
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem("currentUser");
+    // Clear question date when logging out
+    if (currentUser) {
+      localStorage.removeItem(`lastQuestionDate_${currentUser.id}`);
+    }
+    // Reset view states
+    setActiveView(null);
+    setActiveGoal(null);
+    // Clear todos and goals
+    setTodos([]);
+    setGoals([]);
+    // Reset progress questions state
+    setShowProgressQuestions(false);
+    setShowMascot(false);
   };
 
-  const handlecheckbox = (e) => {
-    const id = e.target.name;
-    const index = todos.findIndex((item) => item.id === id);
-    const newTodos = [...todos];
-    newTodos[index].isCompleted = !newTodos[index].isCompleted;
-    setTodos(newTodos);
-    saveToLS(newTodos);
+  const handleAddTodo = async (todoText) => {
+    if (currentUser && activeView) {
+      const newTodo = {
+        id: Date.now().toString(),
+        todo: todoText,
+        isCompleted: false,
+        view: activeView,
+        createdAt: new Date().toISOString(),
+      };
+      const newTodos = [...todos, newTodo];
+      setTodos(newTodos);
+      localStorage.setItem(`todos_${currentUser.id}`, JSON.stringify(newTodos));
+
+      // Generate AI analysis for new todo
+      try {
+        const GeminiAIService = (await import("./services/geminiAI")).default;
+
+        const analysis = await GeminiAIService.generateTaskAnalysis(
+          todoText,
+          "todo",
+          {
+            currentTodos: todos,
+            currentGoals: goals,
+            activeView: activeView,
+          }
+        );
+
+        if (analysis && analysis.trim() !== "") {
+          setNotification({
+            message: analysis,
+            type: "analysis",
+          });
+        } else {
+          setNotification({
+            message:
+              "Great addition! This task will help you stay organized and productive.",
+            type: "analysis",
+          });
+        }
+      } catch (error) {
+        // Silent error handling in production
+        setNotification({
+          message:
+            "Great addition! This task will help you stay organized and productive.",
+          type: "analysis",
+        });
+      }
+    }
   };
+
+  const handleAddGoal = async (goalText) => {
+    if (currentUser && activeGoal) {
+      const newGoal = {
+        id: Date.now().toString(),
+        goal: goalText,
+        isCompleted: false,
+        type: activeGoal,
+        createdAt: new Date().toISOString(),
+      };
+      const newGoals = [...goals, newGoal];
+      setGoals(newGoals);
+      localStorage.setItem(`goals_${currentUser.id}`, JSON.stringify(newGoals));
+
+      // Generate AI analysis for new goal
+      try {
+        const GeminiAIService = (await import("./services/geminiAI")).default;
+        const analysis = await GeminiAIService.generateTaskAnalysis(
+          goalText,
+          "goal",
+          {
+            currentTodos: todos,
+            currentGoals: goals,
+            activeGoal: activeGoal,
+          }
+        );
+        setNotification({
+          message: analysis,
+          type: "analysis",
+        });
+        setMascotEmotion("focused");
+        setShowMascot(true);
+        setTimeout(() => setShowMascot(false), 3000);
+      } catch (error) {
+        // Silent error handling in production
+      }
+    }
+  };
+
+  const handleTaskCompletion = async (taskText, taskType = "todo") => {
+    try {
+      const GeminiAIService = (await import("./services/geminiAI")).default;
+      const completedTodos = todos.filter((todo) => todo.isCompleted).length;
+      const completedGoals = goals.filter((goal) => goal.isCompleted).length;
+
+      const celebrationMessage =
+        await GeminiAIService.generateCompletionMessage(taskText, taskType, {
+          totalTodos: todos.length,
+          completedTodos: completedTodos,
+          totalGoals: goals.length,
+          completedGoals: completedGoals,
+        });
+
+      setNotification({
+        message: celebrationMessage,
+        type: "completion",
+      });
+      setMascotEmotion("celebrating");
+      setShowMascot(true);
+      setTimeout(() => setShowMascot(false), 4000);
+    } catch (error) {
+      // Silent error handling in production
+    }
+  };
+
+  // Determine which section to show based on user selection
+  const isTodoMode =
+    activeView === "daily" ||
+    activeView === "weekly" ||
+    activeView === "monthly";
+  const isGoalMode = activeGoal === "shortterm" || activeGoal === "longterm";
+
+  // Show login screen if no user is logged in
+  if (!currentUser) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
     <>
-      <Navbar />
-      <div className="addtodo mx-auto my-8 p-6 bg-white rounded-lg shadow-md w-2/3">
-        <h1 className="text-2xl font-bold mb-4 text-blue-900 text-center">
-          TodoFlow! Organize Your Day, Effortlessly
-        </h1>
-        <h1 className="text-2xl font-bold mb-4 text-blue-900">Add Todo</h1>
-        <div className="flex items-center">
-          <input
-            onChange={change}
-            value={todo}
-            type="text"
-            className="border border-gray-300 rounded-l-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+      <Sidebar
+        activeView={activeView}
+        setActiveView={setActiveView}
+        activeGoal={activeGoal}
+        setActiveGoal={setActiveGoal}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        onMascotEmotion={setMascotEmotion}
+        onShowMascot={setShowMascot}
+      />
+
+      <div className="ml-64 min-h-screen bg-gray-50">
+        {isTodoMode && (
+          <TodoSection
+            activeView={activeView}
+            currentUser={currentUser}
+            todos={todos}
+            setTodos={setTodos}
+            onTaskCompletion={handleTaskCompletion}
+            onAddTodo={handleAddTodo}
+            onMascotEmotion={setMascotEmotion}
+            onShowMascot={setShowMascot}
           />
-          <button
-            onClick={add}
-            disabled={todo.length < 3}
-            className="bg-blue-600 text-white px-3 py-2 rounded-r-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400"
-          >
-            Add
-          </button>
-        </div>
-      </div>
-      <div className="mx-auto w-2/3">
-        <input
-          type="checkbox"
-          checked={finisheditems}
-          className="mr-2 accent-blue-600"
-          onChange={Togglefinished}
+        )}
+        {isGoalMode && (
+          <GoalSection
+            activeGoal={activeGoal}
+            currentUser={currentUser}
+            goals={goals}
+            setGoals={setGoals}
+            onTaskCompletion={handleTaskCompletion}
+            onAddGoal={handleAddGoal}
+            onMascotEmotion={setMascotEmotion}
+            onShowMascot={setShowMascot}
+          />
+        )}
+
+        {/* AI Assistant - Available on all pages */}
+        <AIAssistant
+          currentUser={currentUser}
+          todos={todos}
+          goals={goals}
+          onAddTodo={handleAddTodo}
+          onAddGoal={handleAddGoal}
+          activeView={activeView}
+          activeGoal={activeGoal}
+          onMascotEmotion={setMascotEmotion}
+          onShowMascot={setShowMascot}
         />
-        <label className="text-blue-900 font-medium">Show Completed</label>
-      </div>
-      <h2 className="text-2xl font-bold mt-8 text-center text-blue-900">
-        Todos
-      </h2>
-      <div className="todos mx-auto my-6 w-2/3">
-        {todos.map((item) => {
-          return (
-            (finisheditems || !item.isCompleted) && (
-              <div
-                key={item.id}
-                className="todo flex items-center bg-white shadow-md rounded-lg p-4 my-2 border border-gray-300"
-              >
-                <input
-                  name={item.id}
-                  onChange={handlecheckbox}
-                  type="checkbox"
-                  checked={item.isCompleted}
-                  className="mr-4 accent-blue-600"
-                />
-                <div
-                  className={`flex-grow ${
-                    item.isCompleted
-                      ? "line-through text-gray-500"
-                      : "text-gray-900"
-                  }`}
-                >
-                  {item.todo}
-                </div>
-                <div className="buttons flex space-x-2">
-                  <button
-                    onClick={(e) => handleEdit(e, item.id)}
-                    className="bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600"
-                  >
-                    <CiEdit />
-                  </button>
-                  <button
-                    onClick={(e) => handleDelete(e, item.id)}
-                    className="bg-red-600 text-white p-2 rounded-md hover:bg-red-700"
-                  >
-                    <MdDeleteOutline />
-                  </button>
-                </div>
+
+        {/* Show welcome message when no section is selected */}
+        {!isTodoMode && !isGoalMode && (
+          <div className="relative">
+            {/* User Info Card - Right Top Corner */}
+            <div className="absolute top-4 right-4 z-10">
+              <div className="bg-white p-4 rounded-lg shadow-md max-w-xs">
+                <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                  Welcome, {currentUser.username}!
+                </h3>
+                <p className="text-xs text-gray-600">{currentUser.email}</p>
               </div>
-            )
-          );
-        })}
+            </div>
+
+            <div className="flex items-center justify-center h-screen">
+              <div className="text-center">
+                {/* Mascot - Show on welcome screen */}
+                <div className="mb-6 flex justify-center">
+                  <HappyMascot size="large" />
+                </div>
+                <h1 className="text-3xl font-bold text-gray-700 mb-4">
+                  TodoFlow
+                </h1>
+                <p className="text-lg text-gray-600 mb-8">
+                  Select a todo view or goal type from the sidebar to get
+                  started.
+                </p>
+                <div className="flex justify-center space-x-4">
+                  <div className="text-center">
+                    <div className="bg-blue-100 p-4 rounded-lg mb-2">
+                      <span className="text-blue-600 text-2xl">📝</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Choose a todo view</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-green-100 p-4 rounded-lg mb-2">
+                      <span className="text-green-600 text-2xl">🎯</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Choose a goal type</p>
+                  </div>
+                </div>
+
+                {/* Test Progress Questions Button - Only in development */}
+                {import.meta.env.DEV && goals.length > 0 && (
+                  <div className="mt-8">
+                    <button
+                      onClick={triggerProgressQuestions}
+                      className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                    >
+                      🧪 Test Progress Questions
+                    </button>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Click to manually trigger progress questions
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Progress Questions Modal */}
+        {showProgressQuestions && (
+          <ProgressQuestions
+            currentGoals={goals}
+            currentTodos={todos}
+            onClose={() => setShowProgressQuestions(false)}
+            onMascotEmotion={setMascotEmotion}
+            onShowMascot={setShowMascot}
+          />
+        )}
+
+        {/* AI Notification */}
+        {notification && (
+          <AINotification
+            message={notification.message}
+            type={notification.type}
+            onClose={() => setNotification(null)}
+          />
+        )}
+
+        {/* Floating Mascot - Appears during actions (positioned to avoid AI button) */}
+        {showMascot && (
+          <div className="fixed bottom-8 left-8 z-50 animate-fade-in-scale">
+            <Mascot emotion={mascotEmotion} size="large" className="group" />
+          </div>
+        )}
       </div>
     </>
   );
