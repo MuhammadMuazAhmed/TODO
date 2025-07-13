@@ -273,7 +273,7 @@ const TodoSection = ({
                 }`}
                 style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               >
-                <div className="flex items-center w-full sm:w-auto mb-2 sm:mb-0">
+                <div className="flex items-center w-full sm:flex-1 mb-2 sm:mb-0">
                   <input
                     name={item.id}
                     onChange={handleTodoCheckbox}
@@ -306,7 +306,7 @@ const TodoSection = ({
                     )}
                   </div>
                 </div>
-                <div className="buttons flex space-x-2 self-end sm:self-auto">
+                <div className="buttons flex space-x-2 self-end sm:self-auto sm:ml-auto">
                   <button
                     onClick={(e) => handleTodoEdit(e, item.id)}
                     className="bg-yellow-500 text-white p-1.5 lg:p-2 rounded-lg hover:bg-yellow-600 transition-all duration-200 hover-lift interactive-element"

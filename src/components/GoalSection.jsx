@@ -217,7 +217,7 @@ const GoalSection = ({
                 key={item.id}
                 className="goal flex flex-col sm:flex-row items-start sm:items-center bg-white shadow-md rounded-lg p-3 lg:p-4 my-2 border border-gray-300"
               >
-                <div className="flex items-center w-full sm:w-auto mb-2 sm:mb-0">
+                <div className="flex items-center w-full sm:flex-1 mb-2 sm:mb-0">
                   <input
                     name={item.id}
                     onChange={handleGoalCheckbox}
@@ -235,7 +235,7 @@ const GoalSection = ({
                     <span className="text-sm lg:text-base">{item.goal}</span>
                   </div>
                 </div>
-                <div className="buttons flex space-x-2 self-end sm:self-auto">
+                <div className="buttons flex space-x-2 self-end sm:self-auto sm:ml-auto">
                   <button
                     onClick={(e) => handleGoalEdit(e, item.id)}
                     className="bg-yellow-500 text-white p-1.5 lg:p-2 rounded-md hover:bg-yellow-600"
