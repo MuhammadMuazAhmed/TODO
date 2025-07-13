@@ -79,23 +79,25 @@ const AINotification = ({
 
   return (
     <div
-      className={`fixed top-6 right-6 z-50 max-w-sm w-full ${
+      className={`fixed top-4 lg:top-6 right-4 lg:right-6 left-4 lg:left-auto z-50 max-w-sm lg:max-w-sm w-auto lg:w-full ${
         isVisible ? "animate-slideIn" : "opacity-0 translate-x-full"
       }`}
     >
       <div
         className={`${style.background} ${style.border} ${
           style.shadow
-        } rounded-2xl p-6 text-white shadow-2xl transform transition-all duration-300 ${
+        } rounded-2xl p-4 lg:p-6 text-white shadow-2xl transform transition-all duration-300 ${
           isExiting ? "animate-slideOut" : ""
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3 lg:mb-4">
           <div className="flex items-center">
-            <div className="text-3xl mr-3 animate-bounce">{style.icon}</div>
+            <div className="text-2xl lg:text-3xl mr-2 lg:mr-3 animate-bounce">
+              {style.icon}
+            </div>
             <div>
-              <h3 className="font-bold text-lg">{style.title}</h3>
+              <h3 className="font-bold text-base lg:text-lg">{style.title}</h3>
               <div className="text-xs opacity-90">AI Assistant</div>
             </div>
           </div>
@@ -104,7 +106,7 @@ const AINotification = ({
             className="text-white hover:text-gray-200 transition-colors duration-200 p-1 rounded-full hover:bg-white hover:bg-opacity-20"
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4 lg:w-5 lg:h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -120,8 +122,8 @@ const AINotification = ({
         </div>
 
         {/* Message */}
-        <div className="mb-4">
-          <p className="text-white text-sm leading-relaxed font-medium">
+        <div className="mb-3 lg:mb-4">
+          <p className="text-white text-xs lg:text-sm leading-relaxed font-medium">
             {message}
           </p>
         </div>
@@ -140,7 +142,7 @@ const AINotification = ({
         <div className="flex justify-end">
           <button
             onClick={handleClose}
-            className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105"
+            className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 lg:px-4 py-1.5 lg:py-2 rounded-full text-xs lg:text-sm font-medium transition-all duration-200 transform hover:scale-105"
           >
             Got it!
           </button>
