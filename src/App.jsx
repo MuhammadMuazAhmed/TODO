@@ -30,6 +30,7 @@ function App() {
   const [hasShownQuestionsToday, setHasShownQuestionsToday] = useState(false);
   const [mascotEmotion, setMascotEmotion] = useState("happy");
   const [showMascot, setShowMascot] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Security: Clear any sensitive data from URL parameters on load
   useEffect(() => {
@@ -331,9 +332,11 @@ function App() {
         onLogout={handleLogout}
         onMascotEmotion={setMascotEmotion}
         onShowMascot={setShowMascot}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
 
-      <div className="ml-64 min-h-screen bg-gray-50">
+      <div className="lg:ml-64 min-h-screen bg-gray-50 transition-all duration-300">
         {isTodoMode && (
           <TodoSection
             activeView={activeView}
@@ -375,50 +378,58 @@ function App() {
         {/* Show welcome message when no section is selected */}
         {!isTodoMode && !isGoalMode && (
           <div className="relative">
-            {/* User Info Card - Right Top Corner */}
-            <div className="absolute top-4 right-4 z-10">
-              <div className="bg-white p-4 rounded-lg shadow-md max-w-xs">
-                <h3 className="text-sm font-semibold text-gray-800 mb-1">
+            {/* User Info Card - Responsive positioning */}
+            <div className="absolute top-4 right-4 lg:right-4 z-10">
+              <div className="bg-white p-3 lg:p-4 rounded-lg shadow-md max-w-xs">
+                <h3 className="text-xs lg:text-sm font-semibold text-gray-800 mb-1">
                   Welcome, {currentUser.username}!
                 </h3>
                 <p className="text-xs text-gray-600">{currentUser.email}</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-center h-screen">
-              <div className="text-center">
+            <div className="flex items-center justify-center min-h-screen px-4 lg:px-0">
+              <div className="text-center max-w-md lg:max-w-lg">
                 {/* Mascot - Show on welcome screen */}
-                <div className="mb-6 flex justify-center">
+                <div className="mb-4 lg:mb-6 flex justify-center">
                   <HappyMascot size="large" />
                 </div>
-                <h1 className="text-3xl font-bold text-gray-700 mb-4">
+                <h1 className="text-2xl lg:text-3xl font-bold text-gray-700 mb-3 lg:mb-4">
                   TodoFlow
                 </h1>
-                <p className="text-lg text-gray-600 mb-8">
+                <p className="text-base lg:text-lg text-gray-600 mb-6 lg:mb-8">
                   Select a todo view or goal type from the sidebar to get
                   started.
                 </p>
-                <div className="flex justify-center space-x-4">
+                <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                   <div className="text-center">
-                    <div className="bg-blue-100 p-4 rounded-lg mb-2">
-                      <span className="text-blue-600 text-2xl">📝</span>
+                    <div className="bg-blue-100 p-3 lg:p-4 rounded-lg mb-2">
+                      <span className="text-blue-600 text-xl lg:text-2xl">
+                        📝
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600">Choose a todo view</p>
+                    <p className="text-xs lg:text-sm text-gray-600">
+                      Choose a todo view
+                    </p>
                   </div>
                   <div className="text-center">
-                    <div className="bg-green-100 p-4 rounded-lg mb-2">
-                      <span className="text-green-600 text-2xl">🎯</span>
+                    <div className="bg-green-100 p-3 lg:p-4 rounded-lg mb-2">
+                      <span className="text-green-600 text-xl lg:text-2xl">
+                        🎯
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600">Choose a goal type</p>
+                    <p className="text-xs lg:text-sm text-gray-600">
+                      Choose a goal type
+                    </p>
                   </div>
                 </div>
 
                 {/* Test Progress Questions Button - Only in development */}
                 {import.meta.env.DEV && goals.length > 0 && (
-                  <div className="mt-8">
+                  <div className="mt-6 lg:mt-8">
                     <button
                       onClick={triggerProgressQuestions}
-                      className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                      className="bg-purple-600 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg hover:bg-purple-700 transition-colors duration-200 text-sm lg:text-base"
                     >
                       🧪 Test Progress Questions
                     </button>
@@ -454,7 +465,7 @@ function App() {
 
         {/* Floating Mascot - Appears during actions (positioned to avoid AI button) */}
         {showMascot && (
-          <div className="fixed bottom-8 left-8 z-50 animate-fade-in-scale">
+          <div className="fixed bottom-4 lg:bottom-8 left-4 lg:left-8 z-50 animate-fade-in-scale">
             <Mascot emotion={mascotEmotion} size="large" className="group" />
           </div>
         )}

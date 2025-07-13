@@ -10,7 +10,7 @@ const Login = ({ onLogin }) => {
 
   // Input validation and sanitization
   const sanitizeInput = (input) => {
-    return input.trim().replace(/[<>]/g, '');
+    return input.trim().replace(/[<>]/g, "");
   };
 
   const validateEmail = (email) => {
@@ -19,7 +19,11 @@ const Login = ({ onLogin }) => {
   };
 
   const validateUsername = (username) => {
-    return username.length >= 3 && username.length <= 20 && /^[a-zA-Z0-9_]+$/.test(username);
+    return (
+      username.length >= 3 &&
+      username.length <= 20 &&
+      /^[a-zA-Z0-9_]+$/.test(username)
+    );
   };
 
   const validatePassword = (password) => {
@@ -37,7 +41,9 @@ const Login = ({ onLogin }) => {
     if (isRegistering) {
       // Registration validation
       if (!validateUsername(sanitizedUsername)) {
-        setError("Username must be 3-20 characters and contain only letters, numbers, and underscores");
+        setError(
+          "Username must be 3-20 characters and contain only letters, numbers, and underscores"
+        );
         return;
       }
 
@@ -54,7 +60,9 @@ const Login = ({ onLogin }) => {
       // Registration logic
       try {
         const users = JSON.parse(localStorage.getItem("users") || "[]");
-        const existingUser = users.find((user) => user.username === sanitizedUsername);
+        const existingUser = users.find(
+          (user) => user.username === sanitizedUsername
+        );
 
         if (existingUser) {
           setError("Username already exists!");
@@ -91,7 +99,8 @@ const Login = ({ onLogin }) => {
       try {
         const users = JSON.parse(localStorage.getItem("users") || "[]");
         const user = users.find(
-          (u) => u.username === sanitizedUsername && u.password === sanitizedPassword
+          (u) =>
+            u.username === sanitizedUsername && u.password === sanitizedPassword
         );
 
         if (!user) {
@@ -113,23 +122,23 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h1 className="text-3xl font-bold text-center text-blue-900 mb-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white p-6 lg:p-8 rounded-lg shadow-md w-full max-w-sm lg:w-96">
+        <h1 className="text-2xl lg:text-3xl font-bold text-center text-blue-900 mb-6 lg:mb-8">
           TodoFlow
         </h1>
 
-        <h2 className="text-xl font-semibold text-center mb-6">
+        <h2 className="text-lg lg:text-xl font-semibold text-center mb-4 lg:mb-6">
           {isRegistering ? "Create Account" : "Welcome Back"}
         </h2>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-3 lg:px-4 py-2 lg:py-3 rounded mb-4 text-sm lg:text-base">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-4">
           <div>
             <div className="relative">
               <MdPerson className="absolute left-3 top-3 text-gray-400" />
@@ -138,7 +147,7 @@ const Login = ({ onLogin }) => {
                 placeholder="Username"
                 value={username}
                 onChange={handleInputChange(setUsername)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm lg:text-base"
                 required
                 maxLength={20}
               />
@@ -154,7 +163,7 @@ const Login = ({ onLogin }) => {
                   placeholder="Email"
                   value={email}
                   onChange={handleInputChange(setEmail)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm lg:text-base"
                   required
                   maxLength={100}
                 />
@@ -170,7 +179,7 @@ const Login = ({ onLogin }) => {
                 placeholder="Password"
                 value={password}
                 onChange={handleInputChange(setPassword)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm lg:text-base"
                 required
                 maxLength={50}
               />
@@ -179,13 +188,13 @@ const Login = ({ onLogin }) => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm lg:text-base"
           >
             {isRegistering ? "Register" : "Login"}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-4 lg:mt-6 text-center">
           <button
             onClick={() => {
               setIsRegistering(!isRegistering);
@@ -194,7 +203,7 @@ const Login = ({ onLogin }) => {
               setEmail("");
               setPassword("");
             }}
-            className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+            className="text-blue-600 hover:text-blue-800 transition-colors duration-200 text-sm lg:text-base"
           >
             {isRegistering
               ? "Already have an account? Login"

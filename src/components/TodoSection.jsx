@@ -158,30 +158,32 @@ const TodoSection = ({
   }
 
   return (
-    <div className="w-full relative">
-      <div className="addtodo mx-auto my-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl shadow-lg w-2/3 border border-blue-100">
-        <h1 className="text-3xl font-bold mb-4 text-center gradient-text animate-slide-up">
-          <span className="mr-3 text-4xl animate-float">{getViewEmoji()}</span>
+    <div className="w-full relative px-4 lg:px-0">
+      <div className="addtodo mx-auto my-4 lg:my-8 p-4 lg:p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl shadow-lg w-full lg:w-2/3 border border-blue-100">
+        <h1 className="text-2xl lg:text-3xl font-bold mb-3 lg:mb-4 text-center gradient-text animate-slide-up">
+          <span className="mr-2 lg:mr-3 text-3xl lg:text-4xl animate-float">
+            {getViewEmoji()}
+          </span>
           {getViewTitle()}
         </h1>
         <h2
-          className="text-xl font-bold mb-4 text-gray-700 text-center animate-slide-up"
+          className="text-lg lg:text-xl font-bold mb-3 lg:mb-4 text-gray-700 text-center animate-slide-up"
           style={{ animationDelay: "0.1s" }}
         >
           Add New Task
         </h2>
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
           <input
             onChange={change}
             value={todo}
             type="text"
-            className="flex-1 border border-gray-300 rounded-l-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+            className="w-full sm:flex-1 border border-gray-300 rounded-xl sm:rounded-l-xl sm:rounded-r-none p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
             placeholder={`Add a ${activeView} task...`}
           />
           <button
             onClick={addTodo}
             disabled={todo.length < 3}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-r-xl hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover-lift interactive-element"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 lg:px-6 py-3 rounded-xl sm:rounded-l-none sm:rounded-r-xl hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover-lift interactive-element"
           >
             <span className="mr-2 text-lg">✨</span>
             Add Task
@@ -190,62 +192,66 @@ const TodoSection = ({
       </div>
 
       {/* Task Filter Buttons */}
-      <div className="mx-auto w-2/3 mb-6">
-        <div className="flex space-x-4 justify-center">
+      <div className="mx-auto w-full lg:w-2/3 mb-4 lg:mb-6">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 justify-center">
           <button
             onClick={() => setTaskFilter("all")}
-            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 hover-lift interactive-element ${
+            className={`px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-medium transition-all duration-200 hover-lift interactive-element text-sm lg:text-base ${
               taskFilter === "all"
                 ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            <span className="mr-2 text-lg">{getFilterEmoji()}</span>
+            <span className="mr-2 text-base lg:text-lg">
+              {getFilterEmoji()}
+            </span>
             All Tasks
           </button>
           <button
             onClick={() => setTaskFilter("pending")}
-            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 hover-lift interactive-element ${
+            className={`px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-medium transition-all duration-200 hover-lift interactive-element text-sm lg:text-base ${
               taskFilter === "pending"
                 ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg transform scale-105"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            <span className="mr-2 text-lg">⏳</span>
+            <span className="mr-2 text-base lg:text-lg">⏳</span>
             Pending Tasks
           </button>
           <button
             onClick={() => setTaskFilter("completed")}
-            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 hover-lift interactive-element ${
+            className={`px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-medium transition-all duration-200 hover-lift interactive-element text-sm lg:text-base ${
               taskFilter === "completed"
                 ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg transform scale-105"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            <span className="mr-2 text-lg">✅</span>
+            <span className="mr-2 text-base lg:text-lg">✅</span>
             Completed Tasks
           </button>
         </div>
       </div>
 
       <h2
-        className="text-2xl font-bold mt-8 text-center text-gray-800 animate-slide-up"
+        className="text-xl lg:text-2xl font-bold mt-6 lg:mt-8 text-center text-gray-800 animate-slide-up px-4"
         style={{ animationDelay: "0.2s" }}
       >
-        <span className="mr-3 text-3xl animate-pulse-custom">
+        <span className="mr-2 lg:mr-3 text-2xl lg:text-3xl animate-pulse-custom">
           {getFilterEmoji()}
         </span>
         {getViewTitle()} - {getFilterTitle()}
       </h2>
 
-      <div className="todos mx-auto my-6 w-2/3">
+      <div className="todos mx-auto my-4 lg:my-6 w-full lg:w-2/3 px-4 lg:px-0">
         {filteredTodos.length === 0 ? (
           <div
-            className="text-center py-12 text-gray-500 animate-slide-up"
+            className="text-center py-8 lg:py-12 text-gray-500 animate-slide-up"
             style={{ animationDelay: "0.3s" }}
           >
-            <div className="text-6xl mb-4 animate-float">📝</div>
-            <p className="text-lg mb-2">
+            <div className="text-4xl lg:text-6xl mb-3 lg:mb-4 animate-float">
+              📝
+            </div>
+            <p className="text-base lg:text-lg mb-2">
               {taskFilter === "all" &&
                 `No ${activeView} tasks yet. Add your first one above!`}
               {taskFilter === "pending" &&
@@ -253,7 +259,7 @@ const TodoSection = ({
               {taskFilter === "completed" &&
                 `No completed ${activeView} tasks yet.`}
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-xs lg:text-sm text-gray-400">
               Start building your productivity! 🚀
             </p>
           </div>
@@ -262,54 +268,56 @@ const TodoSection = ({
             return (
               <div
                 key={item.id}
-                className={`todo flex items-center bg-white shadow-md rounded-xl p-4 my-3 border border-gray-200 transition-all duration-300 hover-lift hover-glow animate-slide-up ${
+                className={`todo flex flex-col sm:flex-row items-start sm:items-center bg-white shadow-md rounded-xl p-3 lg:p-4 my-3 border border-gray-200 transition-all duration-300 hover-lift hover-glow animate-slide-up ${
                   item.isCompleted ? "bg-green-50 border-green-200" : ""
                 }`}
                 style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               >
-                <input
-                  name={item.id}
-                  onChange={handleTodoCheckbox}
-                  type="checkbox"
-                  checked={item.isCompleted}
-                  className="mr-4 accent-green-600 w-5 h-5 cursor-pointer interactive-element"
-                />
-                <div
-                  className={`flex-grow ${
-                    item.isCompleted
-                      ? "line-through text-gray-500"
-                      : "text-gray-900"
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <span className="mr-2 text-lg">
-                      {item.isCompleted ? "✅" : "📋"}
-                    </span>
-                    {item.todo}
+                <div className="flex items-center w-full sm:w-auto mb-2 sm:mb-0">
+                  <input
+                    name={item.id}
+                    onChange={handleTodoCheckbox}
+                    type="checkbox"
+                    checked={item.isCompleted}
+                    className="mr-3 sm:mr-4 accent-green-600 w-4 h-4 sm:w-5 sm:h-5 cursor-pointer interactive-element"
+                  />
+                  <div
+                    className={`flex-grow ${
+                      item.isCompleted
+                        ? "line-through text-gray-500"
+                        : "text-gray-900"
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <span className="mr-2 text-base lg:text-lg">
+                        {item.isCompleted ? "✅" : "📋"}
+                      </span>
+                      <span className="text-sm lg:text-base">{item.todo}</span>
+                    </div>
+                    {item.description && (
+                      <p className="text-xs lg:text-sm text-gray-500 mt-1">
+                        {item.description}
+                      </p>
+                    )}
+                    {item.estimatedTime && (
+                      <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full mt-1">
+                        ⏱️ {item.estimatedTime}
+                      </span>
+                    )}
                   </div>
-                  {item.description && (
-                    <p className="text-sm text-gray-500 mt-1">
-                      {item.description}
-                    </p>
-                  )}
-                  {item.estimatedTime && (
-                    <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full mt-1">
-                      ⏱️ {item.estimatedTime}
-                    </span>
-                  )}
                 </div>
-                <div className="buttons flex space-x-2">
+                <div className="buttons flex space-x-2 self-end sm:self-auto">
                   <button
                     onClick={(e) => handleTodoEdit(e, item.id)}
-                    className="bg-yellow-500 text-white p-2 rounded-lg hover:bg-yellow-600 transition-all duration-200 hover-lift interactive-element"
+                    className="bg-yellow-500 text-white p-1.5 lg:p-2 rounded-lg hover:bg-yellow-600 transition-all duration-200 hover-lift interactive-element"
                   >
-                    <CiEdit />
+                    <CiEdit className="text-sm lg:text-base" />
                   </button>
                   <button
                     onClick={(e) => handleTodoDelete(e, item.id)}
-                    className="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition-all duration-200 hover-lift interactive-element"
+                    className="bg-red-600 text-white p-1.5 lg:p-2 rounded-lg hover:bg-red-700 transition-all duration-200 hover-lift interactive-element"
                   >
-                    <MdDeleteOutline />
+                    <MdDeleteOutline className="text-sm lg:text-base" />
                   </button>
                 </div>
               </div>

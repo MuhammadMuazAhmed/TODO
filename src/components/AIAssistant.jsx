@@ -167,7 +167,7 @@ const AIAssistant = ({
   return (
     <>
       {/* AI Assistant Toggle Button - Now with Mascot */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 lg:bottom-6 right-4 lg:right-6 z-50">
         <div
           onClick={() => {
             setIsOpen(!isOpen);
@@ -199,69 +199,71 @@ const AIAssistant = ({
 
       {/* AI Assistant Panel */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-2 lg:p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] lg:max-h-[80vh] overflow-hidden">
             {/* Header */}
-            <div className="bg-purple-600 text-white p-4 flex justify-between items-center">
-              <h2 className="text-xl font-semibold">AI Assistant</h2>
+            <div className="bg-purple-600 text-white p-3 lg:p-4 flex justify-between items-center">
+              <h2 className="text-lg lg:text-xl font-semibold">AI Assistant</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:text-gray-200"
+                className="text-white hover:text-gray-200 text-lg lg:text-xl"
               >
                 ✕
               </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b">
+            <div className="flex flex-wrap border-b">
               <button
                 onClick={() => setActiveTab("suggestions")}
-                className={`flex-1 p-3 text-center ${
+                className={`flex-1 min-w-[120px] p-2 lg:p-3 text-center text-xs lg:text-sm ${
                   activeTab === "suggestions"
                     ? "bg-purple-50 text-purple-600 border-b-2 border-purple-600"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
-                <MdAdd className="inline mr-2" />
-                Todo Suggestions
+                <MdAdd className="inline mr-1 lg:mr-2" />
+                <span className="hidden sm:inline">Todo Suggestions</span>
+                <span className="sm:hidden">Suggestions</span>
               </button>
               <button
                 onClick={() => setActiveTab("recommendations")}
-                className={`flex-1 p-3 text-center ${
+                className={`flex-1 min-w-[120px] p-2 lg:p-3 text-center text-xs lg:text-sm ${
                   activeTab === "recommendations"
                     ? "bg-purple-50 text-purple-600 border-b-2 border-purple-600"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
-                <MdTrendingUp className="inline mr-2" />
-                Goal Recommendations
+                <MdTrendingUp className="inline mr-1 lg:mr-2" />
+                <span className="hidden sm:inline">Goal Recommendations</span>
+                <span className="sm:hidden">Goals</span>
               </button>
               <button
                 onClick={() => setActiveTab("insights")}
-                className={`flex-1 p-3 text-center ${
+                className={`flex-1 min-w-[120px] p-2 lg:p-3 text-center text-xs lg:text-sm ${
                   activeTab === "insights"
                     ? "bg-purple-50 text-purple-600 border-b-2 border-purple-600"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
-                <MdLightbulb className="inline mr-2" />
+                <MdLightbulb className="inline mr-1 lg:mr-2" />
                 Insights
               </button>
               <button
                 onClick={() => setActiveTab("chat")}
-                className={`flex-1 p-3 text-center ${
+                className={`flex-1 min-w-[120px] p-2 lg:p-3 text-center text-xs lg:text-sm ${
                   activeTab === "chat"
                     ? "bg-purple-50 text-purple-600 border-b-2 border-purple-600"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
-                <MdChat className="inline mr-2" />
+                <MdChat className="inline mr-1 lg:mr-2" />
                 Chat
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-4 overflow-y-auto max-h-[60vh]">
+            <div className="p-3 lg:p-4 overflow-y-auto max-h-[60vh] lg:max-h-[60vh]">
               {activeTab === "suggestions" && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
@@ -451,19 +453,19 @@ const AIAssistant = ({
                     </div>
                   )}
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="text"
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}
                       placeholder="Ask me anything about productivity..."
-                      className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm lg:text-base"
                       onKeyPress={(e) => e.key === "Enter" && sendChatMessage()}
                     />
                     <button
                       onClick={sendChatMessage}
                       disabled={loading || !chatMessage.trim()}
-                      className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+                      className="bg-purple-600 text-white px-3 lg:px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 text-sm lg:text-base"
                     >
                       {loading ? "..." : "Send"}
                     </button>
