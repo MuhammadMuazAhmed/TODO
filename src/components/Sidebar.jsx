@@ -52,7 +52,9 @@ const Sidebar = ({
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 bg-gradient-to-r from-blue-600 to-purple-700 text-white p-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+        className={`lg:hidden fixed z-30 bg-gradient-to-r from-blue-600 to-purple-700 text-white p-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 ${
+          isMobileMenuOpen ? "top-4 right-4" : "top-4 left-4"
+        }`}
       >
         {isMobileMenuOpen ? (
           <MdClose className="text-2xl" />
@@ -71,7 +73,7 @@ const Sidebar = ({
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white shadow-xl z-20 flex flex-col transform transition-transform duration-300 ease-in-out ${
+        className={`fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white shadow-xl z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"
